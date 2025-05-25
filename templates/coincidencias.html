@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Coincidencias</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet" />
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      font-family: 'Poppins', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #cfcfcf;
+      color: #333;
+      padding-bottom: 70px;
+    }
+
+    table {
+      width: 80%;
+      border-collapse: collapse;
+      margin-top: 20px;
+      margin-left: 50px;
+    }
+
+    th, td {
+      padding: 10px;
+      border: 1px solid #000000;
+      text-align: left;
+    }
+
+    th {
+      background-color: #f2f2f2;
+    }
+
+    .error {
+      color: red;
+    }
+
+    nav {
+      background-color: #1d1d1d;
+      color: #fff;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 15px 30px;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      width: 100%;
+    }
+
+    .nav-left {
+      font-size: 1.1rem;
+      font-weight: 600;
+    }
+
+    .nav-right a {
+      color: #28a745;
+      text-decoration: none;
+      font-size: 1rem;
+      transition: color 0.3s, text-decoration 0.3s;
+    }
+
+    .nav-right a:hover {
+      color: #36c757;
+      text-decoration: underline;
+    }
+
+    footer {
+      background-color: #1d1d1d;
+      color: white;
+      text-align: center;
+      padding: 15px 0;
+      position: fixed;
+      bottom: 0;
+      width: 100%;
+      z-index: 10;
+    }
+
+    footer button {
+      background-color: #28a745;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      font-size: 1rem;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    footer button:hover {
+      background-color: #36c757;
+    }
+
+    fieldset {
+      border: 1px solid #000000;
+      border-radius: 8px;
+      padding: 15px 20px;
+      max-width: 80%;
+      margin: 20px 50px 0 50px;
+    }
+
+    legend {
+      font-weight: 600;
+      font-size: 1.1rem;
+      padding: 0 10px;
+    }
+
+    label {
+      margin-right: 15px;
+      font-weight: 500;
+      cursor: pointer;
+    }
+
+    select {
+      padding: 5px 10px;
+      border-radius: 4px;
+      border: 1px solid #ccc;
+      font-size: 1rem;
+    }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <div class="nav-left">
+      Featulink
+    </div>
+    <div class="nav-right">
+      <a href="/form/">Comenzar</a>
+      {% if user.is_authenticated %}
+      <a href="{% url 'user_profile' %}">Mi Perfil</a>
+      <a href="/">Home</a>
+      {% endif %}
+    </div>
+  </nav>
+
+  <h1 style="margin-left: 50px; margin-top: 20px;">Coincidencias para {{ mi_disciplina }}</h1>
+
+  {% if error %}
+    <p class="error" style="margin-left: 50px;">{{ error }}</p>
+  {% elif coincidencias %}
+    <fieldset>
+      <legend>Filtrar y ordenar coincidencias</legend>
+
+      <label for="disciplina">Disciplina:</label>
+      <select id="disciplina" name="disciplina">
+        <option value="todas">Todas</option>
+        <option value="grafitero">Grafitero</option>
+        <option value="cantante">Cantante</option>
+        <option value="productor">Productor</option>
+        <option value="instrumentista">Instrumentista</option>
+        <option value="bailarin">Bailarín</option>
+      </select>
+
+      <label for="orden" style="margin-left: 30px;">Ordenar por:</label>
+      <select id="orden" name="orden">
+        <option value="compatibilidad">Compatibilidad (mayor a menor)</option>
+        <option value="alfabetico">Alfabético (usuario)</option>
+      </select>
+    </fieldset>
+
+    <table id="tabla-coincidencias">
+      <thead>
+        <tr>
+          <th>Usuario</th>
+          <th>Contacto</th>
+          <th>Disciplina</th>
+          <th>Compatibilidad</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for obj, compat, tipo in coincidencias %}
+        <tr
+          data-disciplina="{{ tipo|lower }}"
+          data-compatibilidad="{{ compat|floatformat:2 }}"
+          data-usuario="{{ obj.usuario_disciplina_tipo.usuario_disciplina.usuario.username|lower }}"
+        >
+          <td>{{ obj.usuario_disciplina_tipo.usuario_disciplina.usuario.username }}</td>
+          <td>
+            <a href="https://mail.google.com/mail/?view=cm&to={{ obj.usuario_disciplina_tipo.usuario_disciplina.usuario.email }}" target="_blank">
+              {{ obj.usuario_disciplina_tipo.usuario_disciplina.usuario.email }}
+            </a>
+          </td>
+          <td>{{ tipo|capfirst }}</td>
+          <td>{{ compat|floatformat:2 }}%</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  {% else %}
+    <p style="margin-left: 50px;">No se encontraron coincidencias por ahora.</p>
+  {% endif %}
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const tabla = document.getElementById('tabla-coincidencias');
+      if (!tabla) return;
+
+      let filasOriginales = Array.from(tabla.tBodies[0].rows);
+
+      const selectDisciplina = document.getElementById('disciplina');
+      const selectOrden = document.getElementById('orden');
+
+      function filtrarYOrdenarCoincidencias() {
+        const disciplinaFiltro = selectDisciplina.value.toLowerCase();
+        const ordenFiltro = selectOrden.value;
+
+        let filas = filasOriginales.slice();
+
+        if (disciplinaFiltro !== 'todas') {
+          filas = filas.filter(fila => fila.dataset.disciplina === disciplinaFiltro);
+        }
+
+        filas.sort((a, b) => {
+          if (ordenFiltro === 'compatibilidad') {
+            return parseFloat(b.dataset.compatibilidad) - parseFloat(a.dataset.compatibilidad);
+          }
+          if (ordenFiltro === 'alfabetico') {
+            return a.dataset.usuario.localeCompare(b.dataset.usuario);
+          }
+          return 0;
+        });
+
+        const tbody = tabla.tBodies[0];
+        tbody.innerHTML = '';
+        filas.forEach(fila => tbody.appendChild(fila));
+      }
+
+      selectDisciplina.addEventListener('change', filtrarYOrdenarCoincidencias);
+      selectOrden.addEventListener('change', filtrarYOrdenarCoincidencias);
+    });
+  </script>
+
+</body>
+</html>

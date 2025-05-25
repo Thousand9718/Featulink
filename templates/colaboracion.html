@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formulario de Colaboración - {{ disciplina.nombre }}</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #cfcfcf;
+            color: #333;
+            padding-bottom: 70px; /* Altura del footer para evitar superposición */
+        }
+
+        /* Navbar */
+        nav {
+            background-color: #1d1d1d;
+            color: #fff;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 30px;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            width: 100%;
+        }
+
+        .nav-left {
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+
+        .nav-right a {
+            color: #28a745;
+            text-decoration: none;
+            font-size: 1rem;
+            transition: color 0.3s, text-decoration 0.3s;
+        }
+
+        .nav-right a:hover {
+            color: #36c757;
+            text-decoration: underline;
+        }
+
+        /* Estilos del formulario */
+        .form-container {
+            max-width: 600px;
+            margin: 50px auto;
+            background: #fff;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .form-container form {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .form-container form input,
+        .form-container form select,
+        .form-container form button {
+            width: 100%;
+            padding: 10px;
+            margin-top: 15px;
+            border-radius: 4px;
+            border: 1px solid #ccc;
+        }
+
+        button {
+            background-color: #28a745;
+            color: #fff;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: #36c757;
+        }
+
+        /* Estilo del mapa */
+        #map {
+            height: 300px;
+            margin-top: 20px;
+            border-radius: 4px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Estilo de los checkboxes */
+        .checkbox-container {
+            display: flex;
+            align-items: center;
+            margin-top: 15px;
+        }
+
+        .checkbox-container input {
+            margin-right: 10px;
+        }
+
+        .checkbox-container label {
+            display: inline-block;
+            margin-right: 20px;
+        }
+
+        /* Estilo del mensaje de éxito */
+        .success-message {
+            color: green;
+            text-align: center;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Navbar -->
+    <nav>
+        <div class="nav-left">
+            Featulink
+        </div>
+        <div class="nav-right">
+            <a href="/form/">Comenzar</a>
+            <a href="/verificar/">Mis Links</a>
+            {% if user.is_authenticated %}
+            <a href="/">Home</a>
+            {% endif %}
+        </div>
+    </nav>
+
+    <!-- Formulario de colaboración -->
+    <div class="form-container">
+        <h1>Completa el formulario como {{ disciplina.nombre }}</h1>
+
+        <form method="post">
+            {% csrf_token %}
+            {{ form.as_p }}
+
+            <!-- Mapa -->
+            <div id="map"></div>
+
+            <input type="hidden" name="ubicacion_lat" id="ubicacion_lat">
+            <input type="hidden" name="ubicacion_lng" id="ubicacion_lng">
+
+            <button type="submit">Enviar</button>
+        </form>
+
+        {% if form.is_valid %}
+            <p class="success-message">Formulario enviado con éxito.</p>
+        {% endif %}
+    </div>
+
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
+
+    <script>
+        const map = L.map('map').setView([40.4168, -3.7038], 5); // España
+
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '© OpenStreetMap contributors'
+        }).addTo(map);
+
+        let marker;
+
+        map.on('click', function (e) {
+            const { lat, lng } = e.latlng;
+            if (marker) {
+                marker.setLatLng(e.latlng);
+            } else {
+                marker = L.marker(e.latlng).addTo(map);
+            }
+
+            document.getElementById('ubicacion_lat').value = lat;
+            document.getElementById('ubicacion_lng').value = lng;
+        });
+    </script>
+
+</body>
+</html>
