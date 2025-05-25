@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Featulink</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Poppins', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #cfcfcf;
+      color: #333;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh; /* Esto asegura que el contenido ocupa todo el alto disponible */
+    }
+
+    /* Navbar */
+    nav {
+      background-color: #1d1d1d;
+      color: #fff;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 15px 30px;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      width: 100%;
+    }
+
+    .nav-left {
+      font-size: 1.1rem;
+      font-weight: 600;
+    }
+
+    .nav-right a {
+      color: #28a745;
+      text-decoration: none;
+      font-size: 1rem;
+      transition: color 0.3s, text-decoration 0.3s;
+    }
+
+    .nav-right a:hover {
+      color: #36c757;
+      text-decoration: underline;
+    }
+
+    /* Carrusel */
+    .carousel {
+      flex-grow: 1; /* Esto hace que el carrusel ocupe el espacio restante */
+      position: relative;
+      width: 100%;
+      height: calc(100vh - 120px - 50px); /* Ajusta el espacio disponible entre el navbar y el footer */
+      overflow: hidden;
+    }
+
+    .carousel-images {
+      display: flex;
+      transition: transform 0.5s ease-in-out;
+      height: 100%;
+    }
+
+    .carousel-images img {
+      width: 100vw;
+      height: 100%;
+      object-fit: cover;
+      flex-shrink: 0;
+    }
+
+    .buttons {
+      position: absolute;
+      top: 50%;
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      transform: translateY(-50%);
+      padding: 0 10px;
+    }
+
+    .buttons button {
+      background-color: rgba(0,0,0,0.5);
+      border: none;
+      color: white;
+      font-size: 1.5rem; /* Reducir tamaño del botón */
+      padding: 0.5rem 1rem;
+      cursor: pointer;
+      transition: background-color 0.3s;
+      border-radius: 50%;
+    }
+
+    .buttons button:hover {
+      background-color: rgba(0,0,0,0.8);
+    }
+
+    /* Footer */
+    footer {
+      background-color: #1d1d1d;
+      color: white;
+      text-align: center;
+      padding: 10px 0; /* Reducir tamaño del footer */
+      position: fixed;
+      bottom: 0;
+      width: 100%;
+      z-index: 10;
+    }
+
+    footer button {
+      background-color: #28a745;
+      color: white;
+      border: none;
+      padding: 5px 15px; /* Reducir el tamaño del botón */
+      font-size: 0.9rem; /* Hacer el texto más pequeño */
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    footer button:hover {
+      background-color: #36c757;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Navbar -->
+  <nav>
+    <div class="nav-left">
+      Bienvenido a Featulink{% if user.is_authenticated %}, {{ user.username }}{% endif %}
+    </div>
+    <div class="nav-right">
+      <a href="/form/">Comenzar</a>
+      <a href="/verificar/">Mis Links</a>
+      {% if user.is_authenticated %}
+      <a href="{% url 'user_profile' %}">Mi Perfil</a>
+      {% endif %}
+    </div>
+  </nav>
+
+  <!-- Carrusel -->
+  <div class="carousel">
+    <div class="carousel-images" id="carouselImages">
+      <img src="https://imagenes.eltiempo.com/files/image_1200_600/uploads/2017/12/29/5a46bcfc7d247.png" alt="Imagen 1">
+      <img src="https://images.unsplash.com/photo-1487452066049-a710f7296400?fm=jpg&q=60&w=3000&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8Z3JhZmZpdGl8ZW58MHx8MHx8fDA%3D" alt="Imagen 2">
+      <img src="https://images.unsplash.com/photo-1609602726003-77a7bf096919?fm=jpg&q=60&w=3000&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8OHx8YnJlYWslMjBkYW5jZXxlbnwwfHwwfHx8MA%3D%3D" alt="Imagen 3">
+      <img src="https://apoloybaco.com/wp-content/uploads/2009/05/Bunk_Johnson.jpg" alt="Imagen 4">
+      <img src="https://koalastudios.b-cdn.net/wp-content/uploads/2021/05/music-producer-what-is-it-and-what-is-it-for.jpg" alt="Imagen 5">
+    </div>
+    <div class="buttons">
+      <button id="prevBtn">&#10094;</button>
+      <button id="nextBtn">&#10095;</button>
+    </div>
+  </div>
+
+  <script>
+    const imagesContainer = document.getElementById('carouselImages');
+    const images = imagesContainer.querySelectorAll('img');
+    const totalImages = images.length;
+    let currentIndex = 0;
+
+    function updateCarousel() {
+      const offset = -currentIndex * 100;
+      imagesContainer.style.transform = `translateX(${offset}vw)`;
+    }
+
+    function showNextImage() {
+      currentIndex = (currentIndex + 1) % totalImages;
+      updateCarousel();
+    }
+
+    setInterval(showNextImage, 3000);
+
+    document.getElementById('nextBtn').addEventListener('click', () => {
+      showNextImage();
+    });
+
+    document.getElementById('prevBtn').addEventListener('click', () => {
+      currentIndex = (currentIndex - 1 + totalImages) % totalImages;
+      updateCarousel();
+    });
+  </script>
+
+  {% if user.is_authenticated %}
+  <!-- Footer -->
+  <footer>
+    <form method="POST" action="{% url 'logout' %}" style="margin: 0;">
+      {% csrf_token %}
+      <button type="submit">
+        Cerrar sesión
+      </button>
+    </form>
+  </footer>
+  {% endif %}  
+
+</body>
+</html>

@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Formulario ya completado</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background-color: #cfcfcf;
+            color: #333;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            text-align: center;
+        }
+
+        h2 {
+            color: #fe0202;
+            margin-bottom: 20px;
+            font-size: 1.8rem;
+        }
+
+        p {
+            font-size: 1.2rem;
+            margin-bottom: 30px;
+        }
+
+        .button {
+            background: none;
+            color: #007bff;
+            border: none;
+            font-size: 1.1rem;
+            cursor: pointer;
+            text-decoration: underline;
+        }
+
+        .button:hover {
+            color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <h2>¡Oops!</h2>
+    <p>Ya has completado tu registro en una disciplina, solo puedes registrar una disciplina de cada tipo por usuario</p>
+    <a class="button" href="{% url 'mostrar_coincidencias' %}">Ver tus links</a>
+</body>
+</html>
