@@ -1,0 +1,13 @@
+services:
+  - type: web
+    name: featulink
+    env: python
+    buildCommand: ""
+    startCommand: gunicorn Featulink.wsgi
+    envVars:
+      - key: DJANGO_SETTINGS_MODULE
+        value: Featulink.settings
+      - key: SECRET_KEY
+        value: tu_clave_secreta
+      - key: ALLOWED_HOSTS
+        value: .onrender.com
