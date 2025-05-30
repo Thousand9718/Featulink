@@ -117,8 +117,8 @@ def mostrar_coincidencias(request):
             continue
 
         for obj in Modelo.objects.all():
-            busca_obj = (obj.busca or "").replace(" ", "").lower().split(',')
-            busca_mia = (mi_instancia.busca or "").replace(" ", "").lower().split(',')
+            busca_obj = [b.strip().lower() for b in (obj.busca or "").split(',')]
+            busca_mia = [b.strip().lower() for b in (mi_instancia.busca or "").split(',')]
 
             if tipo_disciplina in busca_obj and nombre_modelo in busca_mia:
                 compat = calcular_compatibilidad(mi_instancia, obj)
@@ -130,6 +130,7 @@ def mostrar_coincidencias(request):
         'coincidencias': coincidencias,
         'mi_disciplina': tipo_disciplina.capitalize()
     })
+
 
 @login_required
 def verificar_registro(request):
