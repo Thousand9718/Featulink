@@ -1,16 +1,20 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Coincidencias</title>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Rampart+One&display=swap" rel="stylesheet">
+  <link rel="icon" href="logoreondo" type="image/x-icon">
   <style>
     * {
       margin: 0;
       padding: 0;
       box-sizing: border-box;
     }
+
     body {
       font-family: 'Poppins', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
       background-color: #cfcfcf;
@@ -20,19 +24,57 @@
 
     table {
       width: 80%;
-      border-collapse: collapse;
+      border-collapse: separate;
+      border-spacing: 0;
       margin-top: 20px;
       margin-left: 50px;
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+      background: #fff;
     }
 
-    th, td {
-      padding: 10px;
-      border: 1px solid #000000;
+    thead {
+      background-color: #c1089caf;
+      color: white;
+    }
+
+    th,
+    td {
+      padding: 14px 18px;
       text-align: left;
+      font-size: 0.95rem;
     }
 
     th {
-      background-color: #f2f2f2;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      border-bottom: 2px solid #a1077f;
+    }
+
+    tr:nth-child(even) {
+      background-color: #f9f1f6;
+    }
+
+    tr:nth-child(odd) {
+      background-color: #f0e2ef;
+    }
+
+    tr:hover {
+      background-color: #e8d0e7;
+      cursor: pointer;
+      transition: background-color 0.2s ease-in-out;
+    }
+
+    td a {
+      color: #c1089caf;
+      text-decoration: none;
+    }
+
+    td a:hover {
+      text-decoration: underline;
+      color: #e00ab5af;
     }
 
     .error {
@@ -55,6 +97,7 @@
     .nav-left {
       font-size: 1.1rem;
       font-weight: 600;
+      font-family: 'Rampart One', cursive;
     }
 
     .nav-right a {
@@ -122,6 +165,7 @@
     }
   </style>
 </head>
+
 <body>
 
   <nav>
@@ -140,58 +184,56 @@
   <h1 style="margin-left: 50px; margin-top: 20px;">Coincidencias para {{ mi_disciplina }}</h1>
 
   {% if error %}
-    <p class="error" style="margin-left: 50px;">{{ error }}</p>
+  <p class="error" style="margin-left: 50px;">{{ error }}</p>
   {% elif coincidencias %}
-    <fieldset>
-      <legend>Filtrar y ordenar coincidencias</legend>
+  <fieldset>
+    <legend>Filtrar y ordenar coincidencias</legend>
 
-      <label for="disciplina">Disciplina:</label>
-      <select id="disciplina" name="disciplina">
-        <option value="todas">Todas</option>
-        <option value="grafitero">Grafitero</option>
-        <option value="cantante">Cantante</option>
-        <option value="productor">Productor</option>
-        <option value="instrumentista">Instrumentista</option>
-        <option value="bailarin">Bailarín</option>
-      </select>
+    <label for="disciplina">Disciplina:</label>
+    <select id="disciplina" name="disciplina">
+      <option value="todas">Todas</option>
+      <option value="grafitero">Grafitero</option>
+      <option value="cantante">Cantante</option>
+      <option value="productor">Productor</option>
+      <option value="instrumentista">Instrumentista</option>
+      <option value="bailarin">Bailarín</option>
+    </select>
 
-      <label for="orden" style="margin-left: 30px;">Ordenar por:</label>
-      <select id="orden" name="orden">
-        <option value="compatibilidad">Compatibilidad (mayor a menor)</option>
-        <option value="alfabetico">Alfabético (usuario)</option>
-      </select>
-    </fieldset>
+    <label for="orden" style="margin-left: 30px;">Ordenar por:</label>
+    <select id="orden" name="orden">
+      <option value="compatibilidad">Compatibilidad (mayor a menor)</option>
+      <option value="alfabetico">Alfabético (usuario)</option>
+    </select>
+  </fieldset>
 
-    <table id="tabla-coincidencias">
-      <thead>
-        <tr>
-          <th>Usuario</th>
-          <th>Contacto</th>
-          <th>Disciplina</th>
-          <th>Compatibilidad</th>
-        </tr>
-      </thead>
-      <tbody>
-        {% for obj, compat, tipo in coincidencias %}
-        <tr
-          data-disciplina="{{ tipo|lower }}"
-          data-compatibilidad="{{ compat|floatformat:2 }}"
-          data-usuario="{{ obj.usuario_disciplina_tipo.usuario_disciplina.usuario.username|lower }}"
-        >
-          <td>{{ obj.usuario_disciplina_tipo.usuario_disciplina.usuario.username }}</td>
-          <td>
-            <a href="https://mail.google.com/mail/?view=cm&to={{ obj.usuario_disciplina_tipo.usuario_disciplina.usuario.email }}" target="_blank">
-              {{ obj.usuario_disciplina_tipo.usuario_disciplina.usuario.email }}
-            </a>
-          </td>
-          <td>{{ tipo|capfirst }}</td>
-          <td>{{ compat|floatformat:2 }}%</td>
-        </tr>
-        {% endfor %}
-      </tbody>
-    </table>
+  <table id="tabla-coincidencias">
+    <thead>
+      <tr>
+        <th>Usuario</th>
+        <th>Contacto</th>
+        <th>Disciplina</th>
+        <th>Compatibilidad</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for obj, compat, tipo in coincidencias %}
+      <tr data-disciplina="{{ tipo|lower }}" data-compatibilidad="{{ compat|floatformat:2 }}"
+        data-usuario="{{ obj.usuario_disciplina_tipo.usuario_disciplina.usuario.username|lower }}">
+        <td>{{ obj.usuario_disciplina_tipo.usuario_disciplina.usuario.username }}</td>
+        <td>
+          <a href="https://mail.google.com/mail/?view=cm&to={{ obj.usuario_disciplina_tipo.usuario_disciplina.usuario.email }}"
+            target="_blank">
+            {{ obj.usuario_disciplina_tipo.usuario_disciplina.usuario.email }}
+          </a>
+        </td>
+        <td>{{ tipo|capfirst }}</td>
+        <td>{{ compat|floatformat:2 }}%</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
   {% else %}
-    <p style="margin-left: 50px;">No se encontraron coincidencias por ahora.</p>
+  <p style="margin-left: 50px;">No se encontraron coincidencias por ahora.</p>
   {% endif %}
 
   <script>
@@ -235,4 +277,5 @@
   </script>
 
 </body>
+
 </html>

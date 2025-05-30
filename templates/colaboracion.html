@@ -1,8 +1,11 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="logoreondo" type="image/x-icon">
+      <link href="https://fonts.googleapis.com/css2?family=Rampart+One&display=swap" rel="stylesheet">
     <title>Formulario de Colaboración - {{ disciplina.nombre }}</title>
     <style>
         * {
@@ -15,7 +18,8 @@
             font-family: 'Poppins', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background-color: #cfcfcf;
             color: #333;
-            padding-bottom: 70px; /* Altura del footer para evitar superposición */
+            padding-bottom: 70px;
+            /* Altura del footer para evitar superposición */
         }
 
         /* Navbar */
@@ -35,6 +39,7 @@
         .nav-left {
             font-size: 1.1rem;
             font-weight: 600;
+            font-family: 'Rampart One', cursive;
         }
 
         .nav-right a {
@@ -80,7 +85,7 @@
         }
 
         button {
-            background-color: #28a745;
+            background-color: #c1089caf;
             color: #fff;
             font-weight: bold;
             cursor: pointer;
@@ -88,7 +93,7 @@
         }
 
         button:hover {
-            background-color: #c1089caf;
+            background-color: #e00ab5af;
         }
 
         /* Estilo del mapa */
@@ -123,6 +128,7 @@
         }
     </style>
 </head>
+
 <body>
 
     <!-- Navbar -->
@@ -157,12 +163,12 @@
         </form>
 
         {% if form.is_valid %}
-            <p class="success-message">Formulario enviado con éxito.</p>
+        <p class="success-message">Formulario enviado con éxito.</p>
         {% endif %}
     </div>
 
     <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
-    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
 
     <script>
         const map = L.map('map').setView([40.4168, -3.7038], 5); // España
@@ -187,4 +193,5 @@
     </script>
 
 </body>
+
 </html>

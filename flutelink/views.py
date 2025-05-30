@@ -2,7 +2,8 @@ from django.shortcuts import render, redirect, HttpResponse
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import get_user_model
 from django.contrib import messages
-
+from .models import UsuarioDisciplina
+from .forms import UsuarioDisciplinaForm
 from .models import Disciplina, UsuarioDisciplina, UsuarioDisciplinaTipo
 from .models import Cantante, Bailarin, Grafitero, Instrumentista, Productor
 from .forms import CantanteForm, BailarinForm, GrafiteroForm, InstrumentistaForm, ProductorForm
@@ -155,3 +156,21 @@ def user_profile(request):
         return redirect('user_profile')
 
     return render(request, 'user_profile.html', {'user': request.user})
+
+@login_required
+def seleccionar_disciplina(request):
+    # Verificar si ya existe una entrada para este usuario
+    if UsuarioDisciplina.objects.filter(usuario=request.user).exists():
+        return render(request, 'ya_enviado.html')
+
+    if request.method == 'POST':
+        form = UsuarioDisciplinaForm(request.POST)
+        if form.is_valid():
+            instancia = form.save(commit=False)
+            instancia.usuario = request.user  # Aseguramos que se guarda con el usuario actual
+            instancia.save()
+            return render(request, 'ya_enviado.html')
+    else:
+        form = UsuarioDisciplinaForm()
+
+    return render(request, 'seleccionar_disciplina.html', {'form': form})

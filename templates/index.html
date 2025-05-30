@@ -1,10 +1,13 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="icon" href="logoreondo" type="image/x-icon">
   <title>Featulink</title>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Rampart+One&display=swap" rel="stylesheet">
   <style>
     * {
       box-sizing: border-box;
@@ -18,7 +21,8 @@
       color: #333;
       display: flex;
       flex-direction: column;
-      min-height: 100vh; /* Esto asegura que el contenido ocupa todo el alto disponible */
+      min-height: 100vh;
+      /* Esto asegura que el contenido ocupa todo el alto disponible */
     }
 
     /* Navbar */
@@ -38,7 +42,9 @@
     .nav-left {
       font-size: 1.1rem;
       font-weight: 600;
+      font-family: 'Rampart One', cursive;
     }
+
 
     .nav-right a {
       color: #c1089caf;
@@ -54,10 +60,12 @@
 
     /* Carrusel */
     .carousel {
-      flex-grow: 1; /* Esto hace que el carrusel ocupe el espacio restante */
+      flex-grow: 1;
+      /* Esto hace que el carrusel ocupe el espacio restante */
       position: relative;
       width: 100%;
-      height: calc(100vh - 120px - 50px); /* Ajusta el espacio disponible entre el navbar y el footer */
+      height: calc(100vh - 120px - 50px);
+      /* Ajusta el espacio disponible entre el navbar y el footer */
       overflow: hidden;
     }
 
@@ -85,10 +93,11 @@
     }
 
     .buttons button {
-      background-color: rgba(0,0,0,0.5);
+      background-color: rgba(0, 0, 0, 0.5);
       border: none;
       color: white;
-      font-size: 1.5rem; /* Reducir tamaño del botón */
+      font-size: 1.5rem;
+      /* Reducir tamaño del botón */
       padding: 0.5rem 1rem;
       cursor: pointer;
       transition: background-color 0.3s;
@@ -96,7 +105,7 @@
     }
 
     .buttons button:hover {
-      background-color: rgba(0,0,0,0.8);
+      background-color: rgba(0, 0, 0, 0.8);
     }
 
     /* Footer */
@@ -104,7 +113,8 @@
       background-color: #1d1d1d;
       color: white;
       text-align: center;
-      padding: 10px 0; /* Reducir tamaño del footer */
+      padding: 10px 0;
+      /* Reducir tamaño del footer */
       position: fixed;
       bottom: 0;
       width: 100%;
@@ -115,8 +125,10 @@
       background-color: #c1089caf;
       color: white;
       border: none;
-      padding: 5px 15px; /* Reducir el tamaño del botón */
-      font-size: 0.9rem; /* Hacer el texto más pequeño */
+      padding: 5px 15px;
+      /* Reducir el tamaño del botón */
+      font-size: 0.9rem;
+      /* Hacer el texto más pequeño */
       border-radius: 5px;
       cursor: pointer;
     }
@@ -126,6 +138,7 @@
     }
   </style>
 </head>
+
 <body>
 
   <!-- Navbar -->
@@ -146,10 +159,16 @@
   <div class="carousel">
     <div class="carousel-images" id="carouselImages">
       <img src="https://imagenes.eltiempo.com/files/image_1200_600/uploads/2017/12/29/5a46bcfc7d247.png" alt="Imagen 1">
-      <img src="https://images.unsplash.com/photo-1487452066049-a710f7296400?fm=jpg&q=60&w=3000&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8Z3JhZmZpdGl8ZW58MHx8MHx8fDA%3D" alt="Imagen 2">
-      <img src="https://images.unsplash.com/photo-1609602726003-77a7bf096919?fm=jpg&q=60&w=3000&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8OHx8YnJlYWslMjBkYW5jZXxlbnwwfHwwfHx8MA%3D%3D" alt="Imagen 3">
+      <img
+        src="https://images.unsplash.com/photo-1487452066049-a710f7296400?fm=jpg&q=60&w=3000&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8Z3JhZmZpdGl8ZW58MHx8MHx8fDA%3D"
+        alt="Imagen 2">
+      <img
+        src="https://images.unsplash.com/photo-1609602726003-77a7bf096919?fm=jpg&q=60&w=3000&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8OHx8YnJlYWslMjBkYW5jZXxlbnwwfHwwfHx8MA%3D%3D"
+        alt="Imagen 3">
       <img src="https://apoloybaco.com/wp-content/uploads/2009/05/Bunk_Johnson.jpg" alt="Imagen 4">
-      <img src="https://koalastudios.b-cdn.net/wp-content/uploads/2021/05/music-producer-what-is-it-and-what-is-it-for.jpg" alt="Imagen 5">
+      <img
+        src="https://koalastudios.b-cdn.net/wp-content/uploads/2021/05/music-producer-what-is-it-and-what-is-it-for.jpg"
+        alt="Imagen 5">
     </div>
     <div class="buttons">
       <button id="prevBtn">&#10094;</button>
@@ -195,7 +214,8 @@
       </button>
     </form>
   </footer>
-  {% endif %}  
+  {% endif %}
 
 </body>
+
 </html>
