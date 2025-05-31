@@ -119,6 +119,8 @@ def mostrar_coincidencias(request):
     for nombre_modelo, Modelo in modelos.items():
 
         for obj in Modelo.objects.all():
+            if obj.usuario_disciplina_tipo.usuario_disciplina.usuario == user:
+                continue
             busca_obj = set([x.strip().lower() for x in (obj.busca or "").split(',') if x.strip()])
 
             # Debug prints (comment out or remove after verifying)
