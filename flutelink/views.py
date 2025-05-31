@@ -2,11 +2,9 @@ from django.shortcuts import render, redirect, HttpResponse
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import get_user_model
 from django.contrib import messages
-from .models import UsuarioDisciplina
-from .forms import UsuarioDisciplinaForm
-from .models import Disciplina, UsuarioDisciplina, UsuarioDisciplinaTipo
+from .models import UsuarioDisciplina, Disciplina, UsuarioDisciplinaTipo
 from .models import Cantante, Bailarin, Grafitero, Instrumentista, Productor
-from .forms import CantanteForm, BailarinForm, GrafiteroForm, InstrumentistaForm, ProductorForm
+from .forms import CantanteForm, BailarinForm, GrafiteroForm, InstrumentistaForm, ProductorForm,UsuarioDisciplinaForm
 from .utils import calcular_compatibilidad
 
 User = get_user_model()
@@ -16,7 +14,7 @@ def registro_colaboracion(request):
     form_map = {
         'cantante': CantanteForm,
         'bailarin': BailarinForm,
-        'grafitero': GrafiteroForm,  # <-- asegúrate de que el nombre coincide
+        'grafitero': GrafiteroForm,
         'instrumentista': InstrumentistaForm,
         'productor': ProductorForm
     }
@@ -108,17 +106,25 @@ def mostrar_coincidencias(request):
     if not ModeloActual:
         return render(request, 'coincidencias.html', {'error': 'Disciplina no reconocida.'})
 
-    mi_instancia = ModeloActual.objects.get(usuario_disciplina_tipo=usuario_tipo)
+    try:
+        mi_instancia = ModeloActual.objects.get(usuario_disciplina_tipo=usuario_tipo)
+    except ModeloActual.DoesNotExist:
+        return render(request, 'coincidencias.html', {'error': 'No tienes registro para esta disciplina.'})
 
     coincidencias = []
+
+    # Normalized busca list of current user's busca
+    busca_mia = set([x.strip().lower() for x in (mi_instancia.busca or "").split(',') if x.strip()])
 
     for nombre_modelo, Modelo in modelos.items():
         if nombre_modelo == tipo_disciplina:
             continue
 
         for obj in Modelo.objects.all():
-            busca_obj = (obj.busca or "").replace(" ", "").lower().split(',')
-            busca_mia = (mi_instancia.busca or "").replace(" ", "").lower().split(',')
+            busca_obj = set([x.strip().lower() for x in (obj.busca or "").split(',') if x.strip()])
+
+            # Debug prints (comment out or remove after verifying)
+            print(f"Comparing {tipo_disciplina} (mi busca: {busca_mia}) with {nombre_modelo} (obj busca: {busca_obj})")
 
             if tipo_disciplina in busca_obj and nombre_modelo in busca_mia:
                 compat = calcular_compatibilidad(mi_instancia, obj)
@@ -159,7 +165,6 @@ def user_profile(request):
 
 @login_required
 def seleccionar_disciplina(request):
-    # Verificar si ya existe una entrada para este usuario
     if UsuarioDisciplina.objects.filter(usuario=request.user).exists():
         return render(request, 'ya_enviado.html')
 
@@ -167,10 +172,12 @@ def seleccionar_disciplina(request):
         form = UsuarioDisciplinaForm(request.POST)
         if form.is_valid():
             instancia = form.save(commit=False)
-            instancia.usuario = request.user  # Aseguramos que se guarda con el usuario actual
+            instancia.usuario = request.user
             instancia.save()
             return render(request, 'ya_enviado.html')
     else:
         form = UsuarioDisciplinaForm()
 
     return render(request, 'seleccionar_disciplina.html', {'form': form})
+
+
