@@ -117,14 +117,12 @@ def mostrar_coincidencias(request):
     busca_mia = set([x.strip().lower() for x in (mi_instancia.busca or "").split(',') if x.strip()])
 
     for nombre_modelo, Modelo in modelos.items():
-        if nombre_modelo == tipo_disciplina:
-            continue
 
         for obj in Modelo.objects.all():
             busca_obj = set([x.strip().lower() for x in (obj.busca or "").split(',') if x.strip()])
 
             # Debug prints (comment out or remove after verifying)
-            print(f"Comparing {tipo_disciplina} (mi busca: {busca_mia}) with {nombre_modelo} (obj busca: {busca_obj})")
+            #print(f"Comparing {tipo_disciplina} (mi busca: {busca_mia}) with {nombre_modelo} (obj busca: {busca_obj})")
 
             if tipo_disciplina in busca_obj and nombre_modelo in busca_mia:
                 compat = calcular_compatibilidad(mi_instancia, obj)
