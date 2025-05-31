@@ -95,7 +95,6 @@ def mostrar_coincidencias(request):
         return render(request, 'coincidencias.html', {'error': 'No has registrado una disciplina aún.'})
 
     tipo_disciplina = usuario_tipo.tipo.lower()
-    mi_disciplina_id = usuario_tipo.usuario_disciplina.disciplina.id
 
     modelos = {
         'cantante': Cantante,
@@ -109,13 +108,7 @@ def mostrar_coincidencias(request):
     if not ModeloActual:
         return render(request, 'coincidencias.html', {'error': 'Disciplina no reconocida.'})
 
-    try:
-        mi_instancia = ModeloActual.objects.get(usuario_disciplina_tipo=usuario_tipo)
-    except ModeloActual.DoesNotExist:
-        return render(request, 'coincidencias.html', {'error': 'No se encontró tu perfil para esta disciplina.'})
-
-    # Parsear lista de IDs de disciplinas que busca este usuario
-    busca_mia_ids = [int(b) for b in (mi_instancia.busca or "").split(',') if b.strip().isdigit()]
+    mi_instancia = ModeloActual.objects.get(usuario_disciplina_tipo=usuario_tipo)
 
     coincidencias = []
 
@@ -123,12 +116,11 @@ def mostrar_coincidencias(request):
         if nombre_modelo == tipo_disciplina:
             continue
 
-        for obj in Modelo.objects.select_related('usuario_disciplina_tipo__usuario_disciplina__usuario'):
-            obj_disciplina_id = obj.usuario_disciplina_tipo.usuario_disciplina.disciplina.id
-            busca_obj_ids = [int(b) for b in (obj.busca or "").split(',') if b.strip().isdigit()]
+        for obj in Modelo.objects.all():
+            busca_obj = (obj.busca or "").replace(" ", "").lower().split(',')
+            busca_mia = (mi_instancia.busca or "").replace(" ", "").lower().split(',')
 
-            # Comparar usando IDs: ¿yo busco su disciplina? ¿él/ella busca la mía?
-            if mi_disciplina_id in busca_obj_ids and obj_disciplina_id in busca_mia_ids:
+            if tipo_disciplina in busca_obj and nombre_modelo in busca_mia:
                 compat = calcular_compatibilidad(mi_instancia, obj)
                 coincidencias.append((obj, compat, nombre_modelo))
 
@@ -138,7 +130,6 @@ def mostrar_coincidencias(request):
         'coincidencias': coincidencias,
         'mi_disciplina': tipo_disciplina.capitalize()
     })
-
 
 @login_required
 def verificar_registro(request):
