@@ -6,6 +6,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Coincidencias</title>
+  <!-- Fuentes desde Google Fonts -->
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet" />
   <link href="https://fonts.googleapis.com/css2?family=Rampart+One&display=swap" rel="stylesheet">
   <link rel="icon" href="{% static 'img/logoreondo.png' %}" type="image/x-icon">
@@ -217,6 +218,7 @@
       </tr>
     </thead>
     <tbody>
+    <!--Recorre la base de datos y pone los datos en la tabla-->
       {% for obj, compat, tipo in coincidencias %}
       <tr data-disciplina="{{ tipo|lower }}" data-compatibilidad="{{ compat|floatformat:2 }}"
         data-usuario="{{ obj.usuario_disciplina_tipo.usuario_disciplina.usuario.username|lower }}">
@@ -238,6 +240,7 @@
   {% endif %}
 
   <script>
+    //Sistema filtrado
     document.addEventListener('DOMContentLoaded', () => {
       const tabla = document.getElementById('tabla-coincidencias');
       if (!tabla) return;

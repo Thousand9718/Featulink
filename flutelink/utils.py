@@ -2,17 +2,27 @@ import math
 from .models import UsuarioDisciplinaTipo, Cantante, Instrumentista, Bailarin, Productor, Grafitero
 from django.contrib.auth.models import User
 
+import math
+
 def haversine_distance(lat1, lng1, lat2, lng2):
-    R = 6371  # Radio de la Tierra en km
+    # Fórmula de Haversine:
+    # Sirve para calcular la distancia más corta sobre la superficie de una esfera (como la Tierra)
+    # entre dos puntos dados por su latitud y longitud en grados.
+
+    R = 6371  # Radio medio de la Tierra en km
+
+    # Convertimos las coordenadas de grados a radianes
     phi1 = math.radians(lat1)
     phi2 = math.radians(lat2)
     d_phi = math.radians(lat2 - lat1)
     d_lambda = math.radians(lng2 - lng1)
 
+    # Fórmula de Haversine
     a = math.sin(d_phi / 2) ** 2 + math.cos(phi1) * math.cos(phi2) * math.sin(d_lambda / 2) ** 2
     c = 2 * math.atan2(math.sqrt(a), math.sqrt(1 - a))
 
-    return R * c
+    return R * c  # Resultado: distancia entre los dos puntos en kilómetros
+
 
 def calcular_compatibilidad(obj1, obj2):
     compatibilidad = 100
